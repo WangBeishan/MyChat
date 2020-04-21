@@ -9,7 +9,7 @@ public class ServerListener extends Thread {
     @Override
     public void run() {
         try {
-            ServerSocket socket = new ServerSocket(12345);
+            ServerSocket socket = new ServerSocket(5000);
             while(true) {
                 Socket clientSock = socket.accept();
                 JOptionPane.showMessageDialog(null,clientSock.getLocalAddress() + "connected");

@@ -12,7 +12,7 @@ public class ChatManage {
     Window win;
     Socket sock;
     BufferedReader reader;
-    BufferedWriter writer;
+    PrintWriter writer;
 
     public void setWindow(Window win) {
         this.win = win;
@@ -25,11 +25,10 @@ public class ChatManage {
                try {
                    sock = new Socket(ip, 5000);
                    reader = new BufferedReader(new InputStreamReader(sock.getInputStream()));
-                   writer = new BufferedWriter(new OutputStreamWriter(sock.getOutputStream()));
-
+                   writer = new PrintWriter(new OutputStreamWriter(sock.getOutputStream()));
                    String line = null;
                    while ((line = reader.readLine()) != null) {
-                       win.appendText(sock.getInetAddress() + line);
+                       win.appendText(sock.getInetAddress() + " : " + line);
                    }
                    writer.close();
                    reader.close();
@@ -43,11 +42,11 @@ public class ChatManage {
     }
 
     public void sendMessage(String message) {
-        try {
-            writer = new BufferedWriter(new OutputStreamWriter(sock.getOutputStream()));
+        if(writer != null) {
             writer.write(message);
-        } catch (IOException e) {
-            e.printStackTrace();
+            writer.flush();
+        } else {
+            win.appendText("当前链接已中断");
         }
     }
 
