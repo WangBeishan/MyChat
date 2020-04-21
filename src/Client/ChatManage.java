@@ -19,15 +19,27 @@ public class ChatManage {
     }
 
     public void connect(String ip) {
-        try {
-            sock = new Socket(ip,5000);
-            win.appendText("connected ip : " + ip);
-            reader = new BufferedReader(new InputStreamReader(sock.getInputStream()));
-            Thread t = new Thread(new Remote());
-            t.start();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+       new Thread() {
+           @Override
+           public void run() {
+               try {
+                   sock = new Socket(ip, 5000);
+                   reader = new BufferedReader(new InputStreamReader(sock.getInputStream()));
+                   writer = new BufferedWriter(new OutputStreamWriter(sock.getOutputStream()));
+
+                   String line = null;
+                   while ((line = reader.readLine()) != null) {
+                       win.appendText(sock.getInetAddress() + line);
+                   }
+                   writer.close();
+                   reader.close();
+                   writer = null;
+                   reader = null;
+               } catch (IOException e) {
+                   e.printStackTrace();
+               }
+           }
+       }.start();
     }
 
     public void sendMessage(String message) {
@@ -45,6 +57,7 @@ public class ChatManage {
         public void run() {
             try {
                 String line = null;
+                System.out.println("get");
                 while ((line = reader.readLine()) != null) {
                     win.appendText("\n" + sock.getInetAddress() + line);
                 }
