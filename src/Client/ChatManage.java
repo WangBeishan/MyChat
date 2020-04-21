@@ -46,7 +46,7 @@ public class ChatManage {
             try {
                 String line = null;
                 while ((line = reader.readLine()) != null) {
-                    win.appendText("\n" + line);
+                    win.appendText("\n" + sock.getInetAddress() + line);
                 }
             } catch (IOException e) {
                 e.printStackTrace();
